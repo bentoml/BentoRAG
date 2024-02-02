@@ -12,7 +12,11 @@ We have already finished the RAG application in this repo. However, we will walk
 ## Quickstart
 
 ### Clone this repository using git
-`git clone https://github.com/bentoml/BentoRAG.git`
+```bash 
+git clone https://github.com/bentoml/BentoRAG.git
+git submodule init
+git submodule update
+```
 
 ### setup virtual environment
 
