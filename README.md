@@ -130,7 +130,7 @@ The current BentoML service is running on local host. We can deploy the service 
 1. Create a BentoCloud account via https://default.cloud-staging.bentoml.com/ .
 2. Once you are logged in, you should see the following tabs on the left hand side. Navigate to My API Tokens. 
     
-![BentoCloudpng1.png](https://ecure.s3.us-west-2.amazonaws.com/2ca09ac1-c034-487e-836d-e6939c220392/975fe1db-864f-4d54-a766-c93611533f12/%E6%88%AA%E5%B1%8F2024-01-31_14.12.06.png)
+![BentoCloudpng1](http://ecure.s3.us-west-2.amazonaws.com/2ca09ac1-c034-487e-836d-e6939c220392/975fe1db-864f-4d54-a766-c93611533f12/%E6%88%AA%E5%B1%8F2024-01-31_14.12.06.png)
     
 3. Create a API Token following the instructions [here](https://docs.bentoml.com/en/1.2/bentocloud/how-tos/manage-access-token.html#create-an-api-token).
 4. After you created the API Token, you should see a log in command auto-generated. Copy and paste the command into your terminal. You are now logged into BentoCloud on your machine.
