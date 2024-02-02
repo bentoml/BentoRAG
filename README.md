@@ -7,3 +7,11 @@ python3 -m venv venv && source venv/bin/activate && pip install "bentoml>=1.2.0r
 ## setup Sentence Embeddings and LLM service urls:
 
 First copy `conf_tmpl.py` as `conf.py`, then deploy sentence embeddings and OpenLLM service. Fill their urls in `conf.py`
+
+## Start asking questions about Paul Graham!
+
+```bash
+python 01_starter.py
+```
+
+Ask your questions!
