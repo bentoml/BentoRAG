@@ -137,12 +137,12 @@ The current BentoML service is running on local host. We can deploy the service 
 5. Run `bentoml deploy .` to deploy the service. This process can take up to 10+ mins.
 6. Once you have finished deploying, you should see your service listed on BentoCloud under the Overview tab. 
     
-![BentoCloudpng2](rod-files-secure.s3.us-west-2.amazonaws.com/2ca09ac1-c034-487e-836d-e6939c220392/c68383d7-d7eb-40f8-a1b0-f7962897d82b/%E6%88%AA%E5%B1%8F2024-01-31_14.17.24.png)
-    
+    ![截屏2024-01-31 14 17 24](https://github.com/bentoml/BentoRAG/assets/83865371/003f4ed1-5a48-4b9a-b6d4-182fe31540f6)
+
 7. Clicked into your service, you can see all the availble options. To simply make a request to the service, copy the url of your service, and replace the local host url you originally had inside the python script. You should be able to see the same output after you run the code.
     
-![BentoCloudpng3](https://prod-files-secure.s3.us-west-2.amazonaws.com/2ca09ac1-c034-487e-836d-e6939c220392/23e894a0-8946-472d-bfc1-992e78d5c6fb/%E6%88%AA%E5%B1%8F2024-01-31_14.20.54.png)
-    
+    ![截屏2024-01-31 14 20 54](https://github.com/bentoml/BentoRAG/assets/83865371/4aa91086-c375-4c73-961a-ed3fcea1dd4b)
+
 ## Customize LlamaIndex LLM Model with BentoML and Mistral 7B**
 
 Now we have replaced the default embedding model, let’s move on to LLM. Since Llama-Index has built-in support for OpenLLM (a LLM service platform built by BentoML), fewer steps are needed comparing to replacing the embedding model. 
@@ -152,13 +152,13 @@ Now we have replaced the default embedding model, let’s move on to LLM. Since 
 First, let’s deploy a LLM service. 
 
 1. On [BentoCloud](https://default.cloud-staging.bentoml.com/) (which you should already have a account), hover your mouse to Mistral 7B, click deploy.
-    
-![BentoCloudpng4](ure.s3.us-west-2.amazonaws.com/2ca09ac1-c034-487e-836d-e6939c220392/76869fb1-4a86-4c0b-bd5e-aeef58601530/%E6%88%AA%E5%B1%8F2024-02-02_14.46.19.png)
-    
+   
+    ![截屏2024-02-02 14 46 19](https://github.com/bentoml/BentoRAG/assets/83865371/ff58430d-ce7b-42a9-913f-c3fbb7cdc364)
+
 2. Inside the deployment page, all the hardware specifications are already pre-generated. Change the “Deployment Name” under the “Deployment Config” tab to `mistralai--mistral-7b-instruct-service-pzq3`
-    
-![BentoCloudpng5](d-files-secure.s3.us-west-2.amazonaws.com/2ca09ac1-c034-487e-836d-e6939c220392/863079e4-bfb6-466e-9a76-3317cf692753/%E6%88%AA%E5%B1%8F2024-02-02_14.48.53.png)
-    
+
+    ![截屏2024-02-02 14 48 53](https://github.com/bentoml/BentoRAG/assets/83865371/38b7bb08-9fd6-4e3a-8086-56930d8c35d8)
+
 3. Click on the “Submit” button on the bottom right of the page. The deployment can take a few minutes. Congratulations! now you have deployed the LLM service onto BentoCloud using Mistral 7B.
 
 ### Using Mistral 7B as the LLM service for Llama-Index
