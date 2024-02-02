@@ -3,9 +3,10 @@ from llama_index.llms import OpenLLMAPI
 from llama_index.text_splitter import SentenceSplitter
 import bentoml
 
-import conf
+import os
 from embeddings import BentoMLEmbeddings
 
+OPENLLM_URL = os.environ.get('OPENLLM_ENDPOINT')
 
 if __name__ == "__main__":
     embed_model = BentoMLEmbeddings()
@@ -13,7 +14,7 @@ if __name__ == "__main__":
 
     text_splitter = SentenceSplitter(chunk_size=1024, chunk_overlap=20)
 
-    remote_llm = OpenLLMAPI(address=conf.OPENLLM_URL)
+    remote_llm = OpenLLMAPI(OPENLLM_URL)
     # Create a ServiceContext with the custom model and all the configurations
     service_context = ServiceContext.from_defaults(
         llm=remote_llm,

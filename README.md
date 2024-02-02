@@ -5,11 +5,9 @@ LlamaIndex provides a comprehensive framework for managing and retrieving privat
 BentoML is a framework for building reliable, scalable, and cost-efficient AI applications. It comes with everything you need for model serving, application packaging, and production deployment.
 
 We have already finished the RAG application in this repo. However, we will walk you through step by step on how to create a RAG application with Llama-Index and BentoML. This tutorial consists of three parts
-1. Quickstart on the usage of this repository
-2. Customize LlamaIndex Embedding Model with BentoML and Sentence Transformers
-3. Customize LlamaIndex LLM Model with BentoML and Mistral 7B
-
-## Quickstart
+1. Customize LlamaIndex Embedding Model with BentoML and Sentence Transformers
+2. Customize LlamaIndex LLM Model with BentoML and Mistral 7B
+3. Quickstart on the usage of this repository
 
 ### Clone this repository using git
 ```bash 
@@ -18,24 +16,6 @@ git submodule init
 git submodule update
 ```
 
-### setup virtual environment
-
-```bash
-python3 -m venv venv && source venv/bin/activate && pip install "bentoml>=1.2.0rc1" llama-index openllm-client
-```
-
-### setup Sentence Embeddings and LLM service urls:
-
-First copy `conf_tmpl.py` as `conf.py`, then deploy sentence embeddings and OpenLLM service. Fill their urls in `conf.py`
-
-### Start asking questions about Paul Graham!
-
-```bash
-python 01_starter.py
-```
-
-Ask your questions!
-
 ## Customize LlamaIndex Embedding Model with BentoML and Sentence Transformers
 
 Now we've seen the functionality of this RAG application, let's start building it from scratch.
@@ -43,8 +23,8 @@ Now we've seen the functionality of this RAG application, let's start building i
 By default, Llama-Index uses the OpenAI gpt-3.5-turbo endpoint as the embedding model to index documents and queries. However, we can also achieve this by replacing OpenAI with BentoML, offering more flexibility over embedding models. In this example, we will be using a pre-built SBert Sentence Transformers BentoML service to achieve this goal. The steps are as followed:
 
 1. Make a new directory you would like to realize this tutorial `mkdir <dir_name>`
-2. cd in to the directory, then clone the Sentence Transformers BentoML service repository `git clone <https://github.com/bentoml/BentoSentenceTransformers.git`>
-3. Copy the data directory to your newly created directory. This folder contains a text file that we want to index later for the RAG application.
+2. cd in to the directory, if you haven't download the submodule for BentoML Sentence Transformers, run `git submodule init; git submodule update`
+3. Copy the `data` directory to your newly created directory. This folder contains a text file that we want to index later for the RAG application.
 4. Deploy the service following the steps
 - `cd BentoSentenceTransformers`
 - Create a python virutal environment `python -m venv Llama-BentoML`
@@ -63,10 +43,6 @@ from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext
 from llama_index.llms import OpenLLMAPI
 from llama_index.text_splitter import SentenceSplitter
 from llama_index.embeddings.base import BaseEmbedding
-import bentoml
-
-import conf
-
 import bentoml
 
 class BentoMLEmbeddings(BaseEmbedding):
@@ -196,3 +172,33 @@ index = VectorStoreIndex.from_documents(documents, service_context=service_conte
 ```
 
 Run the python code and ask you questions. You should see a answer generated on the terminal. Congratulations! You just finished building a complete RAG application by customizing embedding and LLM models using BentoML!
+
+## Quickstart on the Usage of BentoRAG
+
+### Clone this repository using git
+
+```bash 
+git clone https://github.com/bentoml/BentoRAG.git
+git submodule init
+git submodule update
+```
+### Set Environment Variables
+Deploy sentence embedding and OpenLLM services, then run the following
+```bash
+export TEXT_EMBEDDING_ENDPOINT=<your_embedding_service_url>
+export OPENLLM_ENDPOINT=<your_llm_service_url>
+```
+
+### setup virtual environment
+
+```bash
+python3 -m venv venv && source venv/bin/activate && pip install "bentoml>=1.2.0rc1" llama-index openllm-client
+```
+
+### Start asking questions about Paul Graham!
+
+```bash
+python rag_chat.py
+```
+
+Ask your questions!

@@ -1,10 +1,12 @@
 import bentoml
 from llama_index.embeddings.base import BaseEmbedding
 
-import conf
+import os
+
+EMBEDDINGS_URL = os.environ.get('TEXT_EMBEDDING_ENDPOINT')
 
 class BentoMLEmbeddings(BaseEmbedding):
-    url = conf.EMBEDDINGS_URL
+    url = EMBEDDINGS_URL
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
