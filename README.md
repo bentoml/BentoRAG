@@ -1,5 +1,8 @@
 
-# Building a Simple RAG Application with Llama-Index and BentoML
+# Tutorial: RAG with Cusotm Models
+### Using 🦙 LlamaIndex and 🍱 BentoML
+
+
 LlamaIndex provides a comprehensive framework for managing and retrieving private and domain-specific data. It acts as a bridge between the extensive knowledge of LLMs and the unique, contextual data needs of specific applications.
 
 BentoML is a framework for building reliable, scalable, and cost-efficient AI applications. It comes with everything you need for model serving, application packaging, and production deployment.
