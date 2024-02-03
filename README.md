@@ -106,21 +106,21 @@ Now you should see the embeddings printed on your terminal.
 
 The current BentoML service is running on local host. We can deploy the service onto the BentoCloud platform with one simple command. However, make sure you are logged into BentoCloud first. The steps are as followed:
 
-1. Create a BentoCloud account via https://default.cloud-staging.bentoml.com/ .
+1. Create a BentoCloud account via https://bentoml.com/ .
 2. Once you are logged in, you should see the following tabs on the left hand side. Navigate to My API Tokens. 
     
-    ![截屏2024-01-31 14 12 06](https://github.com/bentoml/BentoRAG/assets/83865371/f42f8496-e7ba-497b-b7eb-56037a83b3be)
+    ![](https://github.com/bentoml/BentoRAG/assets/83865371/f42f8496-e7ba-497b-b7eb-56037a83b3be)
 
 3. Create a API Token following the instructions [here](https://docs.bentoml.com/en/1.2/bentocloud/how-tos/manage-access-token.html#create-an-api-token).
 4. After you created the API Token, you should see a log in command auto-generated. Copy and paste the command into your terminal. You are now logged into BentoCloud on your machine.
 5. Run `bentoml deploy .` to deploy the service. This process can take up to 10+ mins.
 6. Once you have finished deploying, you should see your service listed on BentoCloud under the Overview tab. 
     
-    ![截屏2024-01-31 14 17 24](https://github.com/bentoml/BentoRAG/assets/83865371/003f4ed1-5a48-4b9a-b6d4-182fe31540f6)
+    ![](https://github.com/bentoml/BentoRAG/assets/83865371/003f4ed1-5a48-4b9a-b6d4-182fe31540f6)
 
 7. Clicked into your service, you can see all the availble options. To simply make a request to the service, copy the url of your service, and replace the local host url you originally had inside the python script. You should be able to see the same output after you run the code.
     
-    ![截屏2024-01-31 14 20 54](https://github.com/bentoml/BentoRAG/assets/83865371/4aa91086-c375-4c73-961a-ed3fcea1dd4b)
+    ![](https://github.com/bentoml/BentoRAG/assets/83865371/4aa91086-c375-4c73-961a-ed3fcea1dd4b)
 
 ## Customize LlamaIndex LLM Model with BentoML and Mistral 7B**
 
@@ -130,13 +130,13 @@ Now we have replaced the default embedding model, let’s move on to LLM. Since 
 
 First, let’s deploy a LLM service. 
 
-1. On [BentoCloud](https://default.cloud-staging.bentoml.com/) (which you should already have a account), hover your mouse to Mistral 7B, click deploy.
+1. On [BentoCloud](https://cloud.bentoml.com/) (which you should already have a account), hover your mouse to Mistral 7B, click deploy.
    
-    ![截屏2024-02-02 14 46 19](https://github.com/bentoml/BentoRAG/assets/83865371/ff58430d-ce7b-42a9-913f-c3fbb7cdc364)
+    ![](https://github.com/bentoml/BentoRAG/assets/83865371/ff58430d-ce7b-42a9-913f-c3fbb7cdc364)
 
 2. Inside the deployment page, all the hardware specifications are already pre-generated. Change the “Deployment Name” under the “Deployment Config” tab to `mistralai--mistral-7b-instruct-service-pzq3`
 
-    ![截屏2024-02-02 14 48 53](https://github.com/bentoml/BentoRAG/assets/83865371/38b7bb08-9fd6-4e3a-8086-56930d8c35d8)
+    ![](https://github.com/bentoml/BentoRAG/assets/83865371/38b7bb08-9fd6-4e3a-8086-56930d8c35d8)
 
 3. Click on the “Submit” button on the bottom right of the page. The deployment can take a few minutes. Congratulations! now you have deployed the LLM service onto BentoCloud using Mistral 7B.
 
