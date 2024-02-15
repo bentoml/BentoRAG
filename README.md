@@ -15,6 +15,7 @@ We have already finished the RAG application in this repo. However, we will walk
 ### Clone this repository using git
 ```bash 
 git clone https://github.com/bentoml/BentoRAG.git
+cd BentoRAG
 git submodule init
 git submodule update
 ```
