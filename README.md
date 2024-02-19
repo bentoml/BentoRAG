@@ -1,5 +1,5 @@
 
-# Tutorial: RAG with Cusotm Models
+# Tutorial: RAG with Custom Models
 ### Using 🦙 LlamaIndex and 🍱 BentoML
 
 
