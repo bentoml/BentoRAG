@@ -1,13 +1,16 @@
 import bentoml
-from llama_index.embeddings.base import BaseEmbedding
+from llama_index.core.base.embeddings.base import BaseEmbedding
 
 import os
 
 EMBEDDINGS_URL = os.environ.get('TEXT_EMBEDDING_ENDPOINT')
+# EMBEDDINGS_URL = "http://0.0.0.0:3000"
+OPENAI_API_TOKEN = "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"
 
 class BentoMLEmbeddings(BaseEmbedding):
     url = EMBEDDINGS_URL
     def __init__(self, **kwargs):
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         super().__init__(**kwargs)
     
     def sync_client(self, query: str):
@@ -37,12 +40,12 @@ class BentoMLEmbeddings(BaseEmbedding):
     
     def _get_text_embedding(self, text):
         if isinstance(text, str):
-            return self.sync_client(text)
+            return self.sync_client(text).tolist()
         else:
             return self.sync_client(text[0].get_text())
     
     def _get_text_embeddings(self, text):
         if isinstance(text, str) or isinstance(text[0], str):
-            return self.sync_client(text)
+            return self.sync_client(text).tolist()
         else:
-            return self.sync_client(text[0].get_text())
+            return self.sync_client(text[0].get_text()).tolist()

@@ -1,0 +1,9 @@
+bentoml
+openai
+opencv-python
+llama-index
+numpy
+pdf2image
+pytesseract
+torch
+sentence_transformers 
