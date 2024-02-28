@@ -1,12 +1,13 @@
 service: "service.py:RAGService"
 labels:
   owner: bentoml-team
-  stage: demo
 include:
-  - "*.py"
+  - "service.py"
 python:
-  requirements_txt: "./requirements.txt"
+  requirements_txt: "./requirement.txt"
 docker:
     distro: debian
     system_packages:
       - ffmpeg
+      - poppler-utils
+      - tesseract-ocr

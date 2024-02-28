@@ -20,25 +20,17 @@ import openai
 class OCRService:
         
     @bentoml.api
-    def ingest_pdf(self, pdf: Annotated[Path, bentoml.validators.ContentType("application/pdf")], pdf_name: str) -> str:
+    def ingest_pdf(self, pdf: Annotated[Path, bentoml.validators.ContentType("application/pdf")]) -> str:
         from pdf2image import convert_from_path
 
-        if not os.path.exists("RAGData"):
-            os.mkdir("RAGData")
-            
         pages = convert_from_path(pdf)
-        extracted_text = []
-        destination = f'RAGData/{pdf_name}.txt'
+        extracted_text = ''
         for page in pages:
             preprocessed_image = self.deskew(np.array(page))
             text = self.extract_text_from_image(preprocessed_image)
-            extracted_text.append(text)
-
-        with open(destination, "w") as txt_file:    
-            for text in extracted_text:
-                txt_file.write(text)
+            extracted_text += text
     
-        return f"Successfully ingested pdf. Storage located at {destination}"
+        return extracted_text
 
     def deskew(self, image):
         import cv2
@@ -101,7 +93,7 @@ class SentenceTransformers:
 
 
 
-OPENAI_API_TOKEN = os.environ.get('OPENAI_API_KEY')
+# OPENAI_API_TOKEN = os.environ.get('OPENAI_API_KEY')
 
 class BentoMLEmbeddings(BaseEmbedding):
     _model: bentoml.Service = PrivateAttr()
@@ -160,26 +152,30 @@ class RAGService:
     def __init__(self):
         from llama_index.core import Settings
 
-        openai.api_key = OPENAI_API_TOKEN
-        if not os.path.exists("RAGData"):
+        self.api_key = ""
+        if not os.path.exists("./RAGData"):
             os.mkdir("RAGData")
 
-        text_splitter = SentenceSplitter(chunk_size=1024, chunk_overlap=20)
+        self.text_splitter = SentenceSplitter(chunk_size=1024, chunk_overlap=20)
         self.index = None
         self.query_engine = None
-        embed_model = BentoMLEmbeddings(self.embedding_service)
+        self.embed_model = BentoMLEmbeddings(self.embedding_service)
 
         # Configure Llama-index Global Settings
-        Settings.embed_model = embed_model
-        Settings.node_parser = text_splitter
-        Settings.num_output = 4096
-        Settings.context_window = 8192
-        Settings.llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo")
+        # Settings.embed_model = self.embed_model
+        # Settings.node_parser = self.text_splitter
+        # Settings.num_output = 4096
+        # Settings.context_window = 8192
+        # Settings.llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo")
 
 
     @bentoml.api
     def ingest(self, pdf: Annotated[Path, bentoml.validators.ContentType("application/pdf")], pdf_name: str) -> str:
-        return self.ocr_service.ingest_pdf(pdf, pdf_name)
+        extracted_text = self.ocr_service.ingest_pdf(pdf)
+        destination = f'RAGData/{pdf_name}.txt'
+        with open(destination, "w") as txt_file:    
+            txt_file.write(extracted_text)
+        return f"Successfully Loaded Document: {destination}"
     
     @bentoml.api
     def ingest_text(self, texts, file_name):
@@ -188,7 +184,15 @@ class RAGService:
             txt_file.write(texts)
 
     @bentoml.api
-    def query(self, query: str) -> str:
+    def query(self, query: str, openai_api_key: str) -> str:
+        from llama_index.core import Settings
+        openai.api_key = openai_api_key
+        Settings.embed_model = self.embed_model
+        Settings.node_parser = self.text_splitter
+        Settings.num_output = 4096
+        Settings.context_window = 8192
+        Settings.llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo")
+
         documents = SimpleDirectoryReader("RAGData").load_data()
         self.index = VectorStoreIndex.from_documents(documents)
         self.query_engine = self.index.as_query_engine()
@@ -206,7 +210,4 @@ class RAGService:
         sentence_embeddings = await self.embedding_model.encode(sentences)
         return sentence_embeddings
     
-    
-
-
 
