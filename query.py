@@ -7,7 +7,6 @@ api_key = input("Please paste your openai key: ")
 
 while user_input:
     with bentoml.SyncHTTPClient(url, timeout=300) as client:
-        print(client.debug_ls())
         response = client.query(user_input, api_key)
         print(response)
         user_input = input("Please ask a question about Sherlock: ")

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bentoml
 
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage
 from llama_index.llms.openai import OpenAI
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.base.embeddings.base import BaseEmbedding
@@ -171,10 +171,17 @@ class RAGService:
 
     @bentoml.api
     def ingest(self, pdf: Annotated[Path, bentoml.validators.ContentType("application/pdf")], pdf_name: str) -> str:
+        from llama_index.core import Settings
+        Settings.embed_model = self.embed_model
+
         extracted_text = self.ocr_service.ingest_pdf(pdf)
         destination = f'RAGData/{pdf_name}.txt'
         with open(destination, "w") as txt_file:    
             txt_file.write(extracted_text)
+        
+        documents = SimpleDirectoryReader("RAGData").load_data()
+        self.index = VectorStoreIndex.from_documents(documents)
+        self.index.storage_context.persist(persist_dir="./storage")
         return f"Successfully Loaded Document: {destination}"
     
     @bentoml.api
@@ -193,8 +200,11 @@ class RAGService:
         Settings.context_window = 8192
         Settings.llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo")
 
-        documents = SimpleDirectoryReader("RAGData").load_data()
-        self.index = VectorStoreIndex.from_documents(documents)
+        # documents = SimpleDirectoryReader("RAGData").load_data()
+        # self.index = VectorStoreIndex.from_documents(documents)
+
+        storage_context = StorageContext.from_defaults(persist_dir="./storage")
+        self.index = load_index_from_storage(storage_context)
         self.query_engine = self.index.as_query_engine()
         response = self.query_engine.query(query)
         # print(response)
