@@ -2,7 +2,7 @@ service: "service.py:RAGService"
 labels:
   owner: bentoml-team
 include:
-  - "service.py"
+  - "*.py"
 python:
   requirements_txt: "./requirement.txt"
 docker:

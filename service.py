@@ -162,11 +162,8 @@ class RAGService:
         self.embed_model = BentoMLEmbeddings(self.embedding_service)
 
         # Configure Llama-index Global Settings
-        # Settings.embed_model = self.embed_model
-        # Settings.node_parser = self.text_splitter
-        # Settings.num_output = 4096
-        # Settings.context_window = 8192
-        # Settings.llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo")
+        Settings.embed_model = self.embed_model
+        Settings.node_parser = self.text_splitter
 
 
     @bentoml.api
@@ -190,24 +187,23 @@ class RAGService:
         with open("./RAGData/" + file_name, "w") as txt_file:
             txt_file.write(texts)
 
+        documents = SimpleDirectoryReader("RAGData").load_data()
+        self.index = VectorStoreIndex.from_documents(documents)
+        self.index.storage_context.persist(persist_dir="./storage")
+        return f"Successfully Loaded Document: {destination}"
+
     @bentoml.api
     def query(self, query: str, openai_api_key: str) -> str:
         from llama_index.core import Settings
         openai.api_key = openai_api_key
-        Settings.embed_model = self.embed_model
-        Settings.node_parser = self.text_splitter
         Settings.num_output = 4096
         Settings.context_window = 8192
         Settings.llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo")
-
-        # documents = SimpleDirectoryReader("RAGData").load_data()
-        # self.index = VectorStoreIndex.from_documents(documents)
 
         storage_context = StorageContext.from_defaults(persist_dir="./storage")
         self.index = load_index_from_storage(storage_context)
         self.query_engine = self.index.as_query_engine()
         response = self.query_engine.query(query)
-        # print(response)
         return str(response)
     
     @bentoml.api
