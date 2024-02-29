@@ -2,8 +2,10 @@ bentoml
 openai
 opencv-python
 llama-index
+llama-index-llms-openai-like
 numpy
 pdf2image
 pytesseract
 torch
-sentence_transformers 
+sentence_transformers
+vllm==0.3.0
