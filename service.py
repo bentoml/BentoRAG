@@ -4,6 +4,7 @@ import bentoml
 
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage
 from llama_index.llms.openai import OpenAI
+from llama_index.llms.openai_like import OpenAILike
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.bridge.pydantic import PrivateAttr
@@ -13,6 +14,35 @@ import numpy as np
 from pathlib import Path
 from typing import Annotated
 import openai
+
+
+from openai_utils import openai_deco, _make_httpx_client
+
+
+LLM_MAX_TOKENS = 4096
+LLM_MODEL_ID = "meta-llama/Llama-2-7b-chat-hf"
+
+@openai_deco(served_model=LLM_MODEL_ID)
+@bentoml.service(
+    traffic={
+        "timeout": 600,
+    },
+    resources={
+        "gpu": 1,
+        "gpu_type": "nvidia-l4",
+    },
+)
+class VLLM:
+    def __init__(self) -> None:
+        from vllm import AsyncEngineArgs, AsyncLLMEngine
+
+        ENGINE_ARGS = AsyncEngineArgs(
+            model=LLM_MODEL_ID,
+            max_model_len=LLM_MAX_TOKENS
+        )
+
+        self.engine = AsyncLLMEngine.from_engine_args(ENGINE_ARGS)
+
 
 @bentoml.service(
     traffic={"timeout": 600, "max_concurrency": 8},
@@ -91,10 +121,6 @@ class SentenceTransformers:
         return sentence_embeddings
 
 
-
-
-# OPENAI_API_TOKEN = os.environ.get('OPENAI_API_KEY')
-
 class BentoMLEmbeddings(BaseEmbedding):
     _model: bentoml.Service = PrivateAttr()
 
@@ -148,6 +174,7 @@ class BentoMLEmbeddings(BaseEmbedding):
 class RAGService:
     ocr_service = bentoml.depends(OCRService)
     embedding_service = bentoml.depends(SentenceTransformers)
+    vllm_service = bentoml.depends(VLLM)
 
     def __init__(self):
         from llama_index.core import Settings
@@ -160,6 +187,9 @@ class RAGService:
         self.index = None
         self.query_engine = None
         self.embed_model = BentoMLEmbeddings(self.embedding_service)
+
+        from bentoml._internal.container import BentoMLContainer
+        self.vllm_url = BentoMLContainer.remote_runner_mapping.get()["VLLM_OpenAI"]
 
         # Configure Llama-index Global Settings
         Settings.embed_model = self.embed_model
@@ -193,12 +223,26 @@ class RAGService:
         return f"Successfully Loaded Document: {destination}"
 
     @bentoml.api
-    def query(self, query: str, openai_api_key: str) -> str:
+    def query(self, query: str) -> str:
+        from transformers import AutoTokenizer
         from llama_index.core import Settings
-        openai.api_key = openai_api_key
-        Settings.num_output = 4096
-        Settings.context_window = 8192
-        Settings.llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo")
+
+        Settings.num_output = 256
+        Settings.context_window = LLM_MAX_TOKENS
+        Settings.tokenizer = AutoTokenizer.from_pretrained(
+            LLM_MODEL_ID
+        )
+
+        httpx_client, base_url = _make_httpx_client(self.vllm_url, VLLM)
+        llm = OpenAILike(
+            api_base= base_url + "/v1/",
+            api_key="no-need",
+            is_chat_model=True,
+            http_client=httpx_client,
+            temperature=0.2,
+            model=LLM_MODEL_ID,
+        )
+        Settings.llm = llm
 
         storage_context = StorageContext.from_defaults(persist_dir="./storage")
         self.index = load_index_from_storage(storage_context)

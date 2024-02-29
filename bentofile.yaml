@@ -11,3 +11,5 @@ docker:
       - ffmpeg
       - poppler-utils
       - tesseract-ocr
+envs:
+  - name: HF_TOKEN
